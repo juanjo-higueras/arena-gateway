@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la página mejorado para SEO -->
+    <title>Arena di Verona Opera Festival - Entradas, Fechas y Artistas</title>
+    <!-- Meta descripción añadida para SEO -->
+    <meta name="description" content="Explora los eventos del Festival de Ópera en la Arena de Verona. Encuentra fechas, artistas y compra tus entradas para las próximas representaciones.">
+    <!-- URL canónica para evitar problemas de contenido duplicado, usa el dominio correcto en tu implementación -->
+    <link rel="canonical" href="https://juanjohigueras.com/verona/events.html">
+    <!-- Incluir la fuente Roboto desde Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Incluir Tailwind CSS desde CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            /* Fuente actualizada a Roboto */
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f7f7;
+        }
+        /* Estilo del spinner */
+        #spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #FFCC00; /* Color principal del spinner */
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-search, .btn-buy, .btn-details {
+            background-color: #FFCC00;
+        }
+        .btn-search:hover, .btn-buy:hover, .btn-details:hover {
+            background-color: #E6B800; /* Un tono más oscuro para el hover */
+        }
+
+        .btn-reset {
+            background-color: #003366; /* Azul del header */
+        }
+        .btn-reset:hover {
+            background-color: #002244; /* Un tono más oscuro para el hover */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Cabecera con fondo, logo y texto -->
+    <div class="bg-gradient-to-r from-[#003366] to-black py-8">
+        <!-- Se ha aumentado el espacio vertical en la vista móvil de `space-y-4` a `space-y-6` -->
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center sm:justify-between space-y-6 sm:space-y-0 sm:space-x-4">
+            <!-- Contenedor del logo -->
+            <div class="flex-shrink-0">
+                <!-- Se ha añadido el alt para SEO -->
+                <img src="./assets/logo-arena-white.png" alt="Logo del Festival de la Arena di Verona" class="h-24 w-auto sm:h-32">
+            </div>
+            <!-- Contenedor del título y subtítulo -->
+            <div class="text-center sm:text-right">
+                <!-- Encabezado principal (h1) para la jerarquía de SEO -->
+                <!-- El texto principal del título se ha movido al span para evitar la duplicación -->
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-white">
+                    <!-- Texto por defecto hasta que se cargue la info -->
+                    <span id="festival-edition" class="block sm:inline-block">Arena di Verona Opera Festival</span>
+                </h1>
+                <!-- Nueva frase en lugar de las fechas -->
+                <!-- Se ha añadido un margen superior en la versión móvil para dar más espacio entre las líneas de texto -->
+                <p class="text-2xl sm:text-3xl font-extrabold text-white mt-4 sm:mt-0">The most Italian place on earth</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contenedor principal para alinear el aviso y el formulario -->
+    <div class="max-w-6xl mx-auto p-4 sm:p-8">
+        <!-- Aviso de no-oficialidad -->
+        <!-- Se ha quitado el max-w-6xl y mx-auto para que herede del contenedor principal -->
+        <div class="bg-red-100 text-red-700 p-4 rounded-lg shadow-md mt-6">
+            <!-- El tamaño del texto del aviso se ha cambiado a text-lg para que sea consistente -->
+            <p class="text-center text-lg">
+                <!-- Se ha eliminado la palabra "Aviso" del texto -->
+                Esta no es la página oficial de la Fondazione Arena di Verona. Es una herramienta de visualización de datos. Los enlaces de <b>"Comprar Entradas"</b> y <b>"Ver Detalles"</b> te redirigirán a la página oficial. Para tu seguridad, verifica que la URL comience con <b>https://www.arena.it</b> antes de realizar cualquier pago.
+            </p>
+        </div>
+
+        <!-- Texto informativo movido aquí -->
+        <p class="text-lg text-gray-700 text-center my-6">Utiliza el formulario para encontrar óperas. Introduce una <b>Fecha ópera</b> para activar el filtro <b>Margen días</b>, que buscará eventos en un rango de días antes y después de la fecha seleccionada. Por ejemplo, un margen de 3 buscará eventos en los 3 días previos y 3 días posteriores. Opcionalmente, puedes buscar por el nombre de un artista en el campo <b>Cast</b>.</p>
+
+        <!-- Filtro por fecha y cast -->
+        <div class="mb-8 flex flex-col sm:flex-row items-center justify-center sm:space-x-4 space-y-4 sm:space-y-0 p-4 bg-white rounded-xl shadow-md">
+            <!-- Encabezado del filtro (h2) para la jerarquía de SEO -->
+            <h2 class="text-2xl font-bold text-gray-800 text-center sm:hidden">Filtrar Eventos</h2>
+            <!-- Fecha Ópera -->
+            <div class="flex flex-col sm:flex-row items-center sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                <label for="date-filter" class="text-gray-700 font-bold sm:whitespace-nowrap">Fecha ópera:</label>
+                <!-- Tipo de input cambiado a date -->
+                <input type="date" id="date-filter" class="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full text-center" aria-label="Filtrar por fecha de ópera">
+            </div>
+            
+            <!-- Margen Días -->
+            <div id="days-filter-container" class="hidden flex flex-col sm:flex-row items-center sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                <label for="days-filter" class="text-gray-700 font-bold sm:whitespace-nowrap">Margen días:</label>
+                <input type="number" id="days-filter" value="3" min="0" class="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full text-center">
+            </div>
+
+            <!-- Cast -->
+            <div class="flex flex-col sm:flex-row items-center sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                <label for="cast-filter" class="text-gray-700 font-bold sm:whitespace-now-wrap">Cast:</label>
+                <input type="text" id="cast-filter" placeholder="ej. Anna Netrebko" class="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full text-center">
+            </div>
+            
+            <p id="validation-message" class="hidden text-sm text-red-500 mt-2">Formato de fecha no válido. Use AAAA-MM-DD.</p>
+
+            <button id="filter-button" aria-label="Buscar eventos" class="w-full sm:w-auto px-6 py-1 btn-search text-black rounded-lg font-medium shadow-md transition-colors duration-200 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Buscar
+            </button>
+            <button id="reset-button" aria-label="Limpiar filtros" class="w-full sm:w-auto px-6 py-1 btn-reset text-white rounded-lg font-medium shadow-md transition-colors duration-200 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.013 21H7.987a2 2 0 01-1.92-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 2 0 00-1 1v3M4 7h16" />
+                </svg>
+                Limpiar
+            </button>
+        </div>
+
+        <div class="text-center mt-10 mb-4">
+            <!-- Encabezado de la lista de eventos (h2) para la jerarquía de SEO -->
+            <h2 class="text-2xl font-bold text-gray-800">Próximas Representaciones</h2>
+            <hr class="mt-2 border-t-2 border-gray-300 w-24 mx-auto">
+        </div>
+
+        <!-- Contenedor para los eventos, que será rellenado por JavaScript -->
+        <div id="events-container" class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Mensaje de carga inicial y spinner -->
+            <div class="col-span-full flex flex-col items-center justify-center text-center mt-8">
+                <p id="loading-message" class="text-gray-500 text-xl animate-pulse">Cargando representaciones...</p>
+                <div id="spinner" class="mt-4"></div>
+            </div>
+        </div>
+
+        <!-- Contenedor para mostrar mensajes de error -->
+        <div id="error-message" class="hidden text-center mt-10 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200">
+            <p>Lo sentimos, no pudimos cargar los eventos. Por favor, asegúrate de que el servidor esté en funcionamiento.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-[#003366] to-black text-center text-gray-200 py-6 mt-10 shadow-inner">
+        <p class="text-sm mb-2">Developed by juanjohigueras.com</p>
+        <span class="inline-block bg-white p-2">
+            <a href="https://www.juanjohigueras.com" target="_blank" rel="noopener noreferrer">
+                <!-- Se ha añadido el alt para SEO -->
+                <img src="./assets/logo-juanjo-white.png" alt="Logo de Juanjo Higueras" class="h-10 mx-auto">
+            </a>
+        </span>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const eventsContainer = document.getElementById('events-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const spinner = document.getElementById('spinner');
+            const errorMessage = document.getElementById('error-message');
+            const dateFilterInput = document.getElementById('date-filter');
+            const daysFilterContainer = document.getElementById('days-filter-container');
+            const daysFilterInput = document.getElementById('days-filter');
+            const castFilterInput = document.getElementById('cast-filter');
+            const validationMessage = document.getElementById('validation-message');
+            const filterButton = document.getElementById('filter-button');
+            const resetButton = document.getElementById('reset-button');
+            const festivalEditionElement = document.getElementById('festival-edition');
+            
+            const apiUrl = 'http://localhost:3000/events';
+            const festivalInfoUrl = 'http://localhost:3000/festival-info';
+            let allEventsData = []; // Variable para almacenar los datos originales sin filtrar
+
+            // Función de ayuda para validar el formato de fecha (YYYY-MM-DD)
+            function isValidDate(dateString) {
+                const regex = /^\d{4}-\d{2}-\d{2}$/;
+                return dateString.match(regex) !== null;
+            }
+
+            // Función para renderizar los eventos en la página
+            function renderEvents(events) {
+                eventsContainer.innerHTML = ''; // Limpiar el contenedor antes de renderizar
+                if (!events || events.length === 0) {
+                    eventsContainer.innerHTML = `<p class="col-span-full text-center text-gray-500 text-xl mt-8">No se encontraron representaciones para los criterios de búsqueda seleccionados.</p>`;
+                    return;
+                }
+
+                events.forEach(event => {
+                    // Plantilla para la tarjeta de evento
+                    const performanceCount = event.details.length;
+                    const performanceText = performanceCount === 1 ? 'representación' : 'representaciones';
+
+                    const detailsHtml = event.details.map(detail => {
+                        const castHtml = detail.cast.map(castMember => `
+                            <li>${castMember}</li>
+                        `).join('');
+
+                        // Obtener solo la fecha y luego cambiar el formato
+                        const dateOnly = detail.date.split(' - ')[0];
+                        const formattedDate = dateOnly.replace(/\./g, '/');
+
+                        return `
+                            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                <p class="text-lg text-gray-700"><span class="font-bold text-gray-900">Fecha:</span> ${formattedDate}</p>
+                                <p class="text-lg text-gray-600 mt-1 mb-2"><span class="font-bold text-gray-800">Cast:</span></p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    ${castHtml}
+                                </ul>
+                                <div class="text-center mt-6">
+                                    <a href="${detail.buyTicketsLink}" target="_blank" class="inline-flex items-center btn-buy text-lg text-black font-medium py-2 px-4 rounded-full shadow-md transition-colors duration-200" aria-label="Comprar entradas para la fecha ${formattedDate}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                        </svg>
+                                        <span>Comprar Entradas</span>
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    const eventCardHtml = `
+                        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 flex flex-col h-full">
+                            <div class="bg-gradient-to-r from-[#003366] to-black p-2 rounded-lg mb-2 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13m-6 0v6l-12-3v-13" />
+                                </svg>
+                                <!-- Se ha cambiado el tamaño de fuente para que el título de la ópera no se desborde -->
+                                <h2 class="text-lg sm:text-xl font-bold text-white text-center ml-2 overflow-hidden whitespace-nowrap">${event.title.replace(' | 2026', '')}</h2>
+                            </div>
+                            <p class="text-lg text-gray-500 mb-2"><strong>${performanceCount}</strong> ${performanceText} programada${performanceCount === 1 ? '' : 's'}.</p>
+                            <button class="mt-3 mb-6 inline-flex items-center btn-details text-lg text-black font-medium py-2 px-4 rounded-full shadow-md transition-colors duration-200 justify-center" aria-label="Ver más detalles del evento" onclick="window.open('${event.url}', '_blank')">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Ver Detalles</span>
+                            </button>
+                            <div class="space-y-4 overflow-y-auto max-h-96 pr-2">
+                                ${detailsHtml}
+                            </div>
+                        </div>
+                    `;
+                    eventsContainer.insertAdjacentHTML('beforeend', eventCardHtml);
+                });
+            }
+
+            // Función para filtrar los eventos
+            function filterEvents() {
+                const dateString = dateFilterInput.value;
+                const daysOffset = parseInt(daysFilterInput.value, 10);
+                const castFilter = castFilterInput.value.toLowerCase();
+                
+                let filteredEvents = allEventsData;
+                let validDate = true;
+
+                if (dateString) {
+                    if (isValidDate(dateString)) {
+                        validationMessage.classList.add('hidden');
+                        
+                        const filterDate = new Date(dateString);
+                        // Normalizamos la fecha del filtro a medianoche para una comparación precisa
+                        filterDate.setHours(0, 0, 0, 0);
+
+                        const startDate = new Date(filterDate);
+                        startDate.setDate(filterDate.getDate() - daysOffset);
+                        // Normalizamos la fecha de inicio del rango a medianoche
+                        startDate.setHours(0, 0, 0, 0);
+
+                        const endDate = new Date(filterDate);
+                        endDate.setDate(endDate.getDate() + daysOffset);
+                        // Normalizamos la fecha de fin del rango a medianoche
+                        endDate.setHours(0, 0, 0, 0);
+
+                        filteredEvents = filteredEvents.map(event => {
+                            const filteredDetails = event.details.filter(detail => {
+                                // Aquí se corrige el formato de la fecha para que coincida con la entrada del campo de tipo "date"
+                                const dateParts = detail.date.split(' - ')[0].split('.');
+                                const detailDate = new Date(
+                                    parseInt(dateParts[2], 10),
+                                    parseInt(dateParts[1], 10) - 1,
+                                    parseInt(dateParts[0], 10)
+                                );
+                                // Normalizamos la fecha del evento a medianoche para una comparación precisa
+                                detailDate.setHours(0, 0, 0, 0);
+
+                                if (daysOffset === 0) {
+                                    return detailDate.getTime() === filterDate.getTime();
+                                } else {
+                                    return detailDate.getTime() >= startDate.getTime() && detailDate.getTime() <= endDate.getTime();
+                                }
+                            });
+                            
+                            if (filteredDetails.length > 0) {
+                                return { ...event, details: filteredDetails };
+                            }
+                            return null;
+                        }).filter(event => event !== null);
+
+                    } else {
+                        validationMessage.textContent = 'Formato de fecha no válido. Use AAAA-MM-DD.';
+                        validationMessage.classList.remove('hidden');
+                        validDate = false;
+                    }
+                }
+
+                if (validDate) {
+                    if (castFilter) {
+                        filteredEvents = filteredEvents.map(event => {
+                            const filteredDetails = event.details.filter(detail => {
+                                const castString = detail.cast.join(' ').toLowerCase();
+                                return castString.includes(castFilter);
+                            });
+                            if (filteredDetails.length > 0) {
+                                return { ...event, details: filteredDetails };
+                            }
+                            return null;
+                        }).filter(event => event !== null);
+                    }
+                    
+                    // Ordenar las tarjetas de eventos por fecha de representación de menor a mayor
+                    filteredEvents.sort((a, b) => {
+                        // Extraer la fecha de la primera representación de cada evento para la comparación
+                        const datePartsA = a.details[0].date.split(' - ')[0].split('.');
+                        const dateA = new Date(datePartsA[2], datePartsA[1] - 1, datePartsA[0]);
+                        const datePartsB = b.details[0].date.split(' - ')[0].split('.');
+                        const dateB = new Date(datePartsB[2], datePartsB[1] - 1, datePartsB[0]);
+                        return dateA.getTime() - dateB.getTime();
+                    });
+
+                    renderEvents(filteredEvents);
+                }
+            }
+
+            // Función para obtener la información del festival
+            async function fetchFestivalInfo() {
+                try {
+                    const response = await fetch(festivalInfoUrl);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const info = await response.json();
+                    
+                    if (info.edition) {
+                         // Quitar el año de la cadena antes de mostrarlo
+                         const cleanTitle = info.edition.replace(/\s\d{4}$/, '');
+                         festivalEditionElement.textContent = cleanTitle;
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch festival info:', error);
+                }
+            }
+
+            // Función principal para obtener los datos
+            async function fetchEvents() {
+                try {
+                    // Mostrar el spinner y el mensaje de carga
+                    eventsContainer.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center text-center mt-8">
+                                                    <p id="loading-message" class="text-gray-500 text-xl animate-pulse">Cargando representaciones...</p>
+                                                    <div id="spinner" class="mt-4"></div>
+                                                </div>`;
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    allEventsData = data; // Almacenar los datos originales
+                    renderEvents(allEventsData);
+                } catch (error) {
+                    console.error('Failed to fetch events:', error);
+                    eventsContainer.innerHTML = '';
+                    errorMessage.classList.remove('hidden');
+                }
+            }
+            
+            // Función para iniciar todas las llamadas en paralelo
+            async function initializeApp() {
+                 await Promise.all([
+                     fetchFestivalInfo(),
+                     fetchEvents()
+                 ]);
+            }
+
+            // Añadir event listeners a los botones
+            filterButton.addEventListener('click', filterEvents);
+            resetButton.addEventListener('click', () => {
+                dateFilterInput.value = '';
+                daysFilterInput.value = '3';
+                castFilterInput.value = '';
+                validationMessage.classList.add('hidden');
+                daysFilterContainer.classList.add('hidden');
+                renderEvents(allEventsData);
+            });
+
+            // Añadir evento oninput para mostrar el campo de días si la fecha es válida
+            dateFilterInput.addEventListener('input', () => {
+                const dateString = dateFilterInput.value;
+                if (isValidDate(dateString)) {
+                    daysFilterContainer.classList.remove('hidden');
+                    validationMessage.classList.add('hidden');
+                } else {
+                    daysFilterContainer.classList.add('hidden');
+                    if (dateString !== '') {
+                        validationMessage.textContent = 'Formato de fecha no válido. Use AAAA-MM-DD.';
+                        validationMessage.classList.remove('hidden');
+                    }
+                }
+            });
+
+            // Llamar a la función para obtener y mostrar la información
+            initializeApp();
+        });
+    </script>
+
+</body>
+</html>
