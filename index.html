@@ -7,8 +7,8 @@
   <meta name="description" content="Explora los eventos del Festival de Ópera en la Arena de Verona. Encuentra fechas, artistas y compra tus entradas para las próximas representaciones.">
   <link rel="canonical" href="https://juanjohigueras.com/verona/index.html">
 
-  <!-- Fuentes -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Fuentes: Uso de 'font-display: swap' para asegurar que el texto sea visible mientras las fuentes se cargan. -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -67,6 +67,47 @@
     }
     .btn-primary:hover::before {
       left: 120%;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+      padding-top: 60px;
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .close {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 25px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover, .close:focus {
+      color: #000;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -143,12 +184,12 @@
         <hr class="mt-3 border-t-2 border-yellow-400 w-24 mx-auto">
       </div>
       <div id="events-container" class="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        <div class="col-span-full flex flex-col items-center justify-center text-center mt-8">
-          <p id="loading-message" class="text-gray-500 text-xl animate-pulse">Cargando representaciones...</p>
-          <div id="spinner" class="mt-4"></div>
-        </div>
+        <!-- El contenido se cargará dinámicamente aquí -->
       </div>
-
+      <div id="loading-state" class="col-span-full flex flex-col items-center justify-center text-center mt-8">
+          <p class="text-gray-500 text-xl animate-pulse">Cargando representaciones...</p>
+          <div id="spinner" class="mt-4"></div>
+      </div>
       <div id="error-message" class="hidden text-center mt-10 p-4 bg-red-100 text-red-700 rounded-lg border border-red-200">
         <p>Lo sentimos, no pudimos cargar los eventos. Por favor, asegúrate de que el servidor esté en funcionamiento.</p>
       </div>
@@ -165,11 +206,22 @@
     </div>
   </footer>
 
+  <!-- Modal de Descripción -->
+  <div id="operaModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3 id="modalTitle" class="text-xl font-bold text-gray-900 mb-4"></h3>
+      <div id="modalDescription" class="text-gray-700 leading-relaxed"></div>
+    </div>
+  </div>
+
   <!-- Script -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    // Se utiliza un IIFE para evitar la contaminación del ámbito global.
+    (() => {
       const eventsContainer = document.getElementById('events-container');
       const errorMessage = document.getElementById('error-message');
+      const loadingState = document.getElementById('loading-state');
       const dateFilterInput = document.getElementById('date-filter');
       const daysFilterContainer = document.getElementById('days-filter-container');
       const daysFilterInput = document.getElementById('days-filter');
@@ -178,6 +230,62 @@
       const filterButton = document.getElementById('filter-button');
       const resetButton = document.getElementById('reset-button');
       const festivalEditionElement = document.getElementById('festival-edition');
+      const operaModal = document.getElementById('operaModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDescription = document.getElementById('modalDescription');
+      const closeModalBtn = document.querySelector('.close');
+
+      const aidaDescription = `Aida es una ópera en cuatro actos de Giuseppe Verdi. La trama se desarrolla en el antiguo Egipto, en un contexto de guerra entre Egipto y Etiopía. La ópera narra el trágico romance entre Radamés, un comandante egipcio, y Aida, una princesa etíope que ha sido esclavizada. Su amor es puesto a prueba por la rivalidad de Amneris, la hija del Faraón, que también ama a Radamés. El drama culmina con una traición, el juicio de Radamés y su fatal desenlace. Aunque existen varias producciones con diferentes directores (como Stefano Poda o Franco Zeffirelli), la música y el libreto de la ópera son los mismos.
+      <br><br>
+      <strong>Acto I:</strong> El ejército egipcio se prepara para la guerra contra Etiopía. Radamés es elegido comandante y, en secreto, sueña con su amada Aida. Sin embargo, Amneris, la princesa egipcia, sospecha de su amor por Aida y la interroga con astucia.
+      <br><br>
+      <strong>Acto II:</strong> Amneris se regocija por el regreso triunfal de Radamés, pero su desconfianza hacia Aida crece. El Faraón otorga la mano de Amneris a Radamés, mientras Aida se reencuentra con su padre, el rey de Etiopía, ahora prisionero, y él la obliga a sonsacarle a Radamés la ubicación del ejército egipcio.
+      <br><br>
+      <strong>Acto III:</strong> A orillas del río Nilo, Aida se encuentra con Radamés. El padre de Aida la convence para que le sonsaque los planes de guerra. Radamés, cegado por el amor, revela la información. Son descubiertos por Amneris y el sacerdote Ramfis, y Radamés es acusado de traición.
+      <br><br>
+      <strong>Acto IV:</strong> Radamés es juzgado por los sacerdotes y condenado a ser enterrado vivo. Aida, que logra colarse en el sepulcro, espera a Radamés para morir junto a él. Ambos sellan su amor en la tumba, mientras Amneris, fuera del sepulcro, llora su amor perdido.`;
+
+      const operaDescriptions = {
+        'Aida Ed. Stefano Poda': aidaDescription,
+        'Aida Ed. Franco Zeffirelli': aidaDescription,
+        'Nabucco': `Nabucco es una ópera en cuatro actos de Giuseppe Verdi. Ambientada en la antigua Babilonia (586 a.C.), narra la historia del rey Nabucodonosor II, quien somete al pueblo judío y los lleva al exilio. La ópera explora temas de poder, fe y redención a través de personajes como el rey, su hija Fenena, y la ambiciosa Abigaille. La obra es célebre por su emotivo coro "Va, pensiero" (el coro de los esclavos hebreos), que se ha convertido en un himno de esperanza y libertad para muchos.
+        <br><br>
+        <strong>Acto I:</strong> Los israelitas, invadidos por las tropas de Nabucco, se lamentan en el Templo de Salomón. Abigaille, la supuesta hija mayor de Nabucco, conspira para usurpar el trono, consumida por los celos hacia su hermana Fenena y su amor no correspondido por Ismael.
+        <br><br>
+        <strong>Acto II:</strong> Abigaille descubre un documento que revela que es una esclava y no la hija de Nabucco. Enfurecida, aprovecha la ausencia de Nabucco para autoproclamarse reina. El rey, al regresar, se proclama a sí mismo dios y es fulminado por un rayo, perdiendo la razón.
+        <br><br>
+        <strong>Acto III:</strong> Abigaille, ahora en el poder, engaña a un Nabucco mentalmente incapacitado para que firme la orden de ejecución de los hebreos. Nabucco se da cuenta de que también ha condenado a su amada hija Fenena.
+        <br><br>
+        <strong>Acto IV:</strong> Nabucco recupera la razón al presenciar la fe de su hija Fenena. Se arrepiente, se convierte al judaísmo, y ordena la liberación de los prisioneros. Abigaille, al ver sus planes frustrados, se envenena y muere pidiendo perdón.`,
+        'Il Barbiere di Siviglia': `El Barbero de Sevilla (Il Barbiere di Siviglia) es una ópera bufa en dos actos de Gioachino Rossini. Se trata de una comedia llena de enredos y malentendidos. La trama sigue al joven y enamorado Conde Almaviva en su intento de casarse con la bella Rosina, pupila del avaro Doctor Bartolo. Con la ayuda del ingenioso barbero Fígaro, un maestro en las intrigas y los disfraces, el conde burla a Bartolo para conquistar el corazón de Rosina. La ópera es conocida por su humor, sus arias virtuosísticas y su ritmo frenético.
+        <br><br>
+        <strong>Acto I:</strong> El Conde Almaviva intenta cortejar a Rosina bajo la ventana de su casa. Con la ayuda del barbero Fígaro, se hace pasar por un estudiante pobre llamado Lindoro para ganar su amor. A continuación, se disfraza de soldado borracho para entrar en la casa de Bartolo, pero sus planes son frustrados y se produce un gran caos.
+        <br><br>
+        <strong>Acto II:</strong> El Conde Almaviva vuelve a la carga, esta vez disfrazado de maestro de música, en un intento de dar lecciones a Rosina y poder pasar tiempo con ella. A pesar de la vigilancia de Bartolo, los enredos culminan con la huida de la pareja, y el Conde revela su verdadera identidad. Bartolo, finalmente, resignado, accede al matrimonio.`,
+        'La Bohème': `La Bohème es una ópera en cuatro actos de Giacomo Puccini. Ambientada en el barrio latino de París en el siglo XIX, relata la vida de un grupo de jóvenes artistas bohemios que luchan contra el hambre, el frío y la pobreza. El eje central es la trágica historia de amor entre el poeta Rodolfo y la costurera Mimì, una relación que florece y se desvanece con la fragilidad de la vida. La música de Puccini es lírica y emotiva, capturando la alegría, el dolor y la desesperación de la juventud.
+        <br><br>
+        <strong>Acto I:</strong> Rodolfo, el poeta, y sus amigos bohemios (el pintor Marcello, el músico Schaunard y el filósofo Colline) malviven en su desván parisino. Mimì, una vecina, aparece buscando una vela. Ambos se enamoran al instante mientras se buscan las llaves de la habitación, que Rodolfo había escondido a propósito.
+        <br><br>
+        <strong>Acto II:</strong> El grupo de amigos se reúne en el Café Momus, donde la alegría se desborda y el romance de Rodolfo y Mimì se consolida.
+        <br><br>
+        <strong>Acto III:</strong> Los amantes se separan debido a la enfermedad de Mimì y los celos de Rodolfo, quien no puede soportar verla sufrir. Sin embargo, al final del acto, se dan cuenta de que no pueden vivir el uno sin el otro y deciden permanecer juntos hasta la primavera.
+        <br><br>
+        <strong>Acto IV:</strong> De vuelta en el desván, los amigos se dan cuenta de que Mimì está muy enferma. Se reúnen para ayudarla. En sus últimos momentos, ella y Rodolfo reviven su amor, y Mimì muere rodeada de sus amigos.`,
+        'La Traviata': `La Traviata es una ópera en tres actos de Giuseppe Verdi. Basada en la novela "La Dama de las Camelias" de Alexandre Dumas (hijo), cuenta la conmovedora y trágica historia de amor entre la cortesana parisina Violetta Valéry y el joven noble Alfredo Germont. A pesar de los prejuicios sociales, su amor florece, pero se ve amenazado por la intervención del padre de Alfredo, Giorgio Germont. La ópera es reconocida por su conmovedora trama, sus arias melódicas y su profundo dramatismo que explora temas de sacrificio y la hipocresía social.
+        <br><br>
+        <strong>Acto I:</strong> En una fiesta en París, Violetta conoce a Alfredo. Él le declara su amor. Aunque ella es reacia a dejar su vida de cortesana, se enamora de él.
+        <br><br>
+        <strong>Acto II:</strong> Violetta y Alfredo se han mudado al campo para vivir juntos. El padre de Alfredo, Giorgio Germont, le pide a Violetta que lo deje para proteger el honor de su familia. Violetta se sacrifica y regresa a París, dejando a Alfredo una nota de despedida.
+        <br><br>
+        <strong>Acto III:</strong> Violetta, gravemente enferma de tuberculosis, se encuentra sola y abandonada. Alfredo, que ha descubierto la verdad sobre su sacrificio, la visita y se reconcilian. Sin embargo, es demasiado tarde y Violetta muere en sus brazos.`,
+        'Turandot': `Turandot es una ópera en tres actos de Giacomo Puccini, basada en una historia persa. La trama se sitúa en la antigua China, donde la fría princesa Turandot desafía a sus pretendientes a resolver tres acertijos. Si fallan, son decapitados. El príncipe Calàf, enamorado de ella, acepta el reto y logra resolverlos. Sin embargo, para ganarse su amor, le da a la princesa un acertijo propio. La ópera es célebre por el aria "Nessun dorma" y su exótica orquestación, aunque quedó inconclusa tras la muerte de Puccini y fue completada por Franco Alfano.
+        <br><br>
+        <strong>Acto I:</strong> El Príncipe de Persia falla en los acertijos de Turandot y es ejecutado ante la multitud. El Príncipe Calàf, un extranjero anónimo, ve a la Princesa Turandot y queda deslumbrado por su belleza, decidiendo enfrentar los acertijos.
+        <br><br>
+        <strong>Acto II:</strong> Calàf se presenta ante la corte y resuelve los tres acertijos. Turandot, horrorizada, le ruega a su padre que no la obligue a casarse. Calàf le da un acertijo propio: si ella descubre su nombre antes del amanecer, él morirá.
+        <br><br>
+        <strong>Acto III:</strong> Nadie duerme en Pekín esa noche mientras Turandot busca el nombre. Turandot captura a Liu, la esclava que acompaña al padre de Calàf, y la tortura para que lo revele, pero ella se suicida para proteger al príncipe. Calàf confronta a Turandot y la besa. Ella se enamora y confiesa su amor por él, proclamando su nombre como "Amor".`
+      };
       
       const apiUrl = 'https://arena-gateway.vercel.app/events';
       const festivalInfoUrl = 'https://arena-gateway.vercel.app/festival-info';
@@ -218,7 +326,7 @@
               }
             },
             "url": event.url,
-            "description": `Entradas para la ópera ${event.title.replace(' | 2026', '')} en la Arena di Verona.`,
+            "description": `Entradas para la ópera ${event.title.replace(' | 2026', '')} en la Arena de Verona.`,
             "organizer": {
               "@type": "Organization",
               "name": "Fondazione Arena di Verona",
@@ -252,6 +360,14 @@
           const performanceCount = event.details.length;
           const performanceText = performanceCount === 1 ? 'representación' : 'representaciones';
 
+          // Elimina la fecha del título y, si es una edición específica, ajusta el formato
+          const fullTitle = event.title.replace(' | 2026', '');
+          let operaName = fullTitle;
+          if (fullTitle.includes('Ed. ')) {
+            const parts = fullTitle.split('Ed. ');
+            operaName = `${parts[0].trim()} (${parts[1].trim()})`;
+          }
+          
           const detailsHtml = event.details.map(detail => {
             const castHtml = detail.cast.map(castMember => `<li>${castMember}</li>`).join('');
             const dateOnly = detail.date.split(' - ')[0];
@@ -276,11 +392,18 @@
 
           const eventCardHtml = `
             <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 flex flex-col h-full">
-              <div class="bg-gradient-to-r from-[#003366] to-black p-2 rounded-lg mb-2 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13m-6 0v6l-12-3v-13" />
-                </svg>
-                <h2 class="text-lg sm:text-xl font-bold text-white text-center ml-2 overflow-hidden whitespace-nowrap">${event.title.replace(' | 2026', '')}</h2>
+              <div class="bg-gradient-to-r from-[#003366] to-black p-2 rounded-lg mb-2 flex items-center justify-between">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13m-6 0v6l-12-3v-13" />
+                  </svg>
+                  <h2 class="text-lg sm:text-xl font-bold text-white text-center ml-2 overflow-hidden whitespace-nowrap">${operaName}</h2>
+                </div>
+                <button class="text-white hover:text-yellow-400 info-icon" data-opera="${event.title.replace(' | 2026', '')}" aria-label="Ver descripción de la ópera">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
               </div>
               <p class="text-lg text-gray-500 mb-2"><strong>${performanceCount}</strong> ${performanceText} programada${performanceCount === 1 ? '' : 's'}.</p>
               <button onclick="window.open('${event.url}', '_blank')" class="btn-primary mt-3 mb-6 inline-flex items-center justify-center text-lg font-medium" aria-label="Ver más detalles del evento">
@@ -294,7 +417,27 @@
           `;
           eventsContainer.insertAdjacentHTML('beforeend', eventCardHtml);
         });
+
+        // Add event listeners for the info buttons after rendering
+        document.querySelectorAll('.info-icon').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const operaName = e.currentTarget.dataset.opera;
+            modalTitle.textContent = operaName;
+            modalDescription.innerHTML = operaDescriptions[operaName] || 'No hay descripción disponible para esta ópera.';
+            operaModal.style.display = 'block';
+          });
+        });
       }
+
+      closeModalBtn.addEventListener('click', () => {
+        operaModal.style.display = 'none';
+      });
+
+      window.addEventListener('click', (event) => {
+        if (event.target == operaModal) {
+          operaModal.style.display = 'none';
+        }
+      });
 
       async function fetchFestivalInfo() {
         try {
@@ -311,11 +454,11 @@
       }
 
       async function fetchEvents() {
+        // Muestra el estado de carga
+        loadingState.classList.remove('hidden');
+        eventsContainer.classList.add('hidden');
+        errorMessage.classList.add('hidden');
         try {
-          eventsContainer.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center text-center mt-8">
-            <p id="loading-message" class="text-gray-500 text-xl animate-pulse">Cargando representaciones...</p>
-            <div id="spinner" class="mt-4"></div>
-          </div>`;
           const response = await fetch(apiUrl);
           if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           const data = await response.json();
@@ -326,6 +469,10 @@
           console.error('Failed to fetch events:', error);
           eventsContainer.innerHTML = '';
           errorMessage.classList.remove('hidden');
+        } finally {
+          // Oculta el estado de carga y muestra los eventos
+          loadingState.classList.add('hidden');
+          eventsContainer.classList.remove('hidden');
         }
       }
 
@@ -408,8 +555,10 @@
         }
       });
 
-      Promise.all([fetchFestivalInfo(), fetchEvents()]);
-    });
+      document.addEventListener('DOMContentLoaded', () => {
+        Promise.all([fetchFestivalInfo(), fetchEvents()]);
+      });
+    })();
   </script>
 </body>
 </html>
