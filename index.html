@@ -125,7 +125,7 @@
           </div>
         </div>
 
-        <p id="validation-message" class="hidden text-sm text-red-500 mt-3 text-center">Formato de fecha no válido. Use AAAA-MM-DD.</p>
+        <p id="validation-message" class="hidden text-sm text-red-500 mt-3 text-center">Formato de fecha no válido.</p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
           <button id="filter-button" class="btn-primary">Buscar</button>
@@ -186,6 +186,59 @@
       function isValidDate(dateString) {
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         return dateString.match(regex) !== null;
+      }
+      
+      // Función para generar dinámicamente el marcado de datos JSON-LD
+      function generateSchemaMarkup(events) {
+        // Elimina el marcado de datos anterior si existe
+        const existingSchema = document.querySelectorAll('script[type="application/ld+json"]');
+        existingSchema.forEach(script => script.remove());
+
+        if (!events || events.length === 0) return;
+
+        events.forEach(event => {
+          const performerList = event.details[0].cast.map(name => ({
+            "@type": "Person",
+            "name": name
+          }));
+          const schemaData = {
+            "@context": "https://schema.org",
+            "@type": "MusicEvent",
+            "name": event.title.replace(' | 2026', ''),
+            "startDate": new Date(event.details[0].date.split(' - ')[0].split('.').reverse().join('-')).toISOString(),
+            "location": {
+              "@type": "Place",
+              "name": "Arena di Verona",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Piazza Bra, 1",
+                "addressLocality": "Verona",
+                "postalCode": "37121",
+                "addressCountry": "IT"
+              }
+            },
+            "url": event.url,
+            "description": `Entradas para la ópera ${event.title.replace(' | 2026', '')} en la Arena di Verona.`,
+            "organizer": {
+              "@type": "Organization",
+              "name": "Fondazione Arena di Verona",
+              "url": "https://www.arena.it"
+            },
+            "performer": performerList,
+            "offers": {
+              "@type": "Offer",
+              "url": event.details[0].buyTicketsLink,
+              "priceCurrency": "EUR",
+              "price": "0.00", // Precio genérico, ya que la API no lo proporciona
+              "availability": "https://schema.org/InStock"
+            }
+          };
+
+          const script = document.createElement('script');
+          script.type = 'application/ld+json';
+          script.innerHTML = JSON.stringify(schemaData, null, 2);
+          document.head.appendChild(script);
+        });
       }
 
       function renderEvents(events) {
@@ -268,6 +321,7 @@
           const data = await response.json();
           allEventsData = data;
           renderEvents(allEventsData);
+          generateSchemaMarkup(allEventsData);
         } catch (error) {
           console.error('Failed to fetch events:', error);
           eventsContainer.innerHTML = '';
@@ -301,7 +355,7 @@
               return null;
             }).filter(event => event !== null);
           } else {
-            validationMessage.textContent = 'Formato de fecha no válido. Use AAAA-MM-DD.';
+            validationMessage.textContent = 'Formato de fecha no válido.';
             validationMessage.classList.remove('hidden');
             validDate = false;
           }
@@ -325,6 +379,7 @@
           });
 
           renderEvents(filteredEvents);
+          generateSchemaMarkup(filteredEvents);
         }
       }
 
@@ -336,6 +391,7 @@
         validationMessage.classList.add('hidden');
         daysFilterContainer.classList.add('hidden');
         renderEvents(allEventsData);
+        generateSchemaMarkup(allEventsData);
       });
 
       dateFilterInput.addEventListener('input', () => {
@@ -346,7 +402,7 @@
         } else {
           daysFilterContainer.classList.add('hidden');
           if (dateString !== '') {
-            validationMessage.textContent = 'Formato de fecha no válido. Use AAAA-MM-DD.';
+            validationMessage.textContent = 'Formato de fecha no válido.';
             validationMessage.classList.remove('hidden');
           }
         }
