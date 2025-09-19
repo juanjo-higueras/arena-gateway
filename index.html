@@ -42,7 +42,6 @@
       color: #000;
       padding: 0.5rem 1.5rem;
       border-radius: 9999px;
-      font-weight: 600;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       display: inline-flex;
@@ -109,6 +108,24 @@
       color: #000;
       text-decoration: none;
     }
+
+    /* Línea divisoria en el pie de página */
+    .divider-line {
+      /* Estilo por defecto para móviles: línea horizontal */
+      width: 100%;
+      height: 1px;
+      background-color: #ca8a04;
+      margin: 2rem 0; /* Margen para separación */
+    }
+
+    /* Estilo para pantallas de escritorio: línea vertical */
+    @media (min-width: 640px) { /* sm */
+      .divider-line {
+        height: 160px;
+        width: 1px;
+        margin: 0 2rem;
+      }
+    }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
@@ -118,10 +135,10 @@
     <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
       <img src="https://juanjohigueras.com/verona/assets/logo-arena-white.png" alt="Logo del Festival de la Arena di Verona" class="h-20 sm:h-28">
       <div class="text-center sm:text-right">
-        <h1 class="text-4xl sm:text-5xl font-bold text-white drop-shadow-lg">
+        <h1 class="text-4xl sm:text-5xl font-bold text-[#facc15] drop-shadow-lg">
           <span id="festival-edition">Arena di Verona Opera Festival</span>
         </h1>
-        <p class="text-xl sm:text-2xl font-medium text-gray-200 mt-3 italic">
+        <p class="text-xl sm:text-2xl font-medium text-[#facc15] mt-3 italic">
           The most Italian place on earth
         </p>
       </div>
@@ -135,7 +152,7 @@
         <p class="text-lg">
           Esta no es la página oficial de la Fondazione Arena di Verona. Es una herramienta de visualización de datos. Los enlaces de <b>"Comprar Entradas"</b> y <b>"Ver Detalles"</b> te redirigirán a la página oficial. Para tu seguridad, verifica que la URL comience con <b>https://www.arena.it</b> antes de realizar cualquier pago.
         </p>
-      </div>
+      </p>
     </section>
 
     <!-- Instrucción -->
@@ -169,8 +186,8 @@
         <p id="validation-message" class="hidden text-sm text-red-500 mt-3 text-center">Formato de fecha no válido.</p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-          <button id="filter-button" class="btn-primary">Buscar</button>
-          <button id="reset-button" class="bg-gradient-to-r from-[#003366] to-black text-white px-6 py-2 rounded-full font-semibold shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300">
+          <button id="filter-button" class="btn-primary font-medium text-base">Buscar</button>
+          <button id="reset-button" class="bg-gradient-to-r from-[#003366] to-black text-white px-6 py-2 rounded-full font-medium text-base shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300">
             Limpiar
           </button>
         </div>
@@ -198,11 +215,30 @@
 
   <!-- Footer -->
   <footer class="bg-gradient-to-r from-[#003366] to-black text-gray-300 text-center py-6 mt-14 border-t-4 border-[#ca8a04]">
-    <p class="text-sm mb-4">Developed by juanjohigueras.com</p>
-    <div class="inline-block bg-white rounded-xl p-3 shadow-md">
-      <a href="https://www.juanjohigueras.com" target="_blank" rel="noopener noreferrer">
-        <img src="https://juanjohigueras.com/verona/assets/logo-juanjo-white.png" alt="Logo de Juanjo Higueras" class="h-10 mx-auto">
-      </a>
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between">
+      <div class="flex-1 flex flex-col items-center justify-center">
+        <p class="text-base mb-4 text-gray-300 font-serif">
+          Si has encontrado esta web útil, puedes invitarme a un prosecco en la <span id="footer-edition">103º</span> edición del festival de ópera en la Arena de Verona. Grazie Mile!
+        </p>
+        <a href="https://buymeacoffee.com/juanjohigub" target="_blank" rel="noopener noreferrer" class="inline-block">
+          <button class="btn-primary flex items-center space-x-2 font-medium text-base">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 67.46 148.22" class="w-3 h-6">
+                  <path d="M45.85,85.24c5.61-3.8,14.84-9.77,19.91-30.4C71.85,30.07,59.61,0,59.61,0H7.85S-4.39,30.07,1.7,54.84c5.07,20.63,14.3,26.6,19.91,30.4,5.61,3.8,7.96,8.14,7.96,16.29v39.27c-21.35-.18-23.53,7.42-23.53,7.42h55.38s-2.17-7.6-23.53-7.42v-39.27c0-8.14,2.35-12.49,7.96-16.29Z"/>
+              </svg>
+              <span>Invítame a un prosecco</span>
+          </button>
+        </a>
+      </div>
+      <!-- Separador de línea que se adapta según el tamaño de la pantalla -->
+      <div class="divider-line"></div>
+      <div class="flex-1 flex flex-col items-center justify-center mt-4 sm:mt-0">
+        <p class="text-base mb-4 font-serif">Developed by juanjohigueras.com</p>
+        <div class="inline-block bg-white rounded-xl p-3 shadow-md">
+          <a href="https://www.juanjohigueras.com" target="_blank" rel="noopener noreferrer">
+            <img src="https://juanjohigueras.com/verona/assets/logo-juanjo-white.png" alt="Logo de Juanjo Higueras" class="h-10 mx-auto">
+          </a>
+        </div>
+      </div>
     </div>
   </footer>
 
@@ -210,7 +246,8 @@
   <div id="operaModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h3 id="modalTitle" class="text-xl font-bold text-gray-900 mb-4"></h3>
+      <h3 id="modalTitle" class="text-xl font-bold text-gray-900"></h3>
+      <div class="h-1 w-full bg-gradient-to-r from-[#003366] to-black my-4 rounded-full"></div>
       <div id="modalDescription" class="text-gray-700 leading-relaxed"></div>
     </div>
   </div>
@@ -230,6 +267,7 @@
       const filterButton = document.getElementById('filter-button');
       const resetButton = document.getElementById('reset-button');
       const festivalEditionElement = document.getElementById('festival-edition');
+      const footerEditionElement = document.getElementById('footer-edition');
       const operaModal = document.getElementById('operaModal');
       const modalTitle = document.getElementById('modalTitle');
       const modalDescription = document.getElementById('modalDescription');
@@ -282,7 +320,7 @@
         <br><br>
         <strong>Acto I:</strong> El Príncipe de Persia falla en los acertijos de Turandot y es ejecutado ante la multitud. El Príncipe Calàf, un extranjero anónimo, ve a la Princesa Turandot y queda deslumbrado por su belleza, decidiendo enfrentar los acertijos.
         <br><br>
-        <strong>Acto II:</strong> Calàf se presenta ante la corte y resuelve los tres acertijos. Turandot, horrorizada, le ruega a su padre que no la obligue a casarse. Calàf le da un acertijo propio: si ella descubre su nombre antes del amanecer, él morirá.
+        <strong>Acto II:</strong> Calàf se presenta ante la corte y resuelve los tres acertijos. Turandot, horrifieda, le ruega a su padre que no la obligue a casarse. Calàf le da un acertijo propio: si ella descubre su nombre antes del amanecer, él morirá.
         <br><br>
         <strong>Acto III:</strong> Nadie duerme en Pekín esa noche mientras Turandot busca el nombre. Turandot captura a Liu, la esclava que acompaña al padre de Calàf, y la tortura para que lo revele, pero ella se suicida para proteger al príncipe. Calàf confronta a Turandot y la besa. Ella se enamora y confiesa su amor por él, proclamando su nombre como "Amor".`
       };
@@ -379,7 +417,7 @@
                 <p class="text-lg text-gray-600 mt-1 mb-2"><span class="font-bold text-gray-800">Cast:</span></p>
                 <ul class="list-disc list-inside space-y-1">${castHtml}</ul>
                 <div class="text-center mt-6">
-                  <a href="${detail.buyTicketsLink}" target="_blank" class="btn-primary inline-flex items-center text-lg font-medium" aria-label="Comprar entradas para la fecha ${formattedDate}">
+                  <a href="${detail.buyTicketsLink}" target="_blank" class="btn-primary inline-flex items-center text-base font-medium" aria-label="Comprar entradas para la fecha ${formattedDate}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
@@ -406,7 +444,7 @@
                 </button>
               </div>
               <p class="text-lg text-gray-500 mb-2"><strong>${performanceCount}</strong> ${performanceText} programada${performanceCount === 1 ? '' : 's'}.</p>
-              <button onclick="window.open('${event.url}', '_blank')" class="btn-primary mt-3 mb-6 inline-flex items-center justify-center text-lg font-medium" aria-label="Ver más detalles del evento">
+              <button onclick="window.open('${event.url}', '_blank')" class="btn-primary mt-3 mb-6 inline-flex items-center justify-center text-base font-medium" aria-label="Ver más detalles del evento">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -445,8 +483,15 @@
           if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           const info = await response.json();
           if (info.edition) {
+            // Elimina el año "2026" si existe en el título
             const cleanTitle = info.edition.replace(/\s\d{4}$/, '');
             festivalEditionElement.textContent = cleanTitle;
+
+            // Extraer el número de la edición del festival (ej. "103")
+            const editionNumber = cleanTitle.match(/^\d+/)?.[0];
+            if (editionNumber && footerEditionElement) {
+              footerEditionElement.textContent = editionNumber + 'º';
+            }
           }
         } catch (error) {
           console.error('Failed to fetch festival info:', error);
