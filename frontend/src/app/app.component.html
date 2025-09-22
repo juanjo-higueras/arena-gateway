@@ -1,0 +1,11 @@
+<div class="bg-gray-50 min-h-screen flex flex-col">
+  <app-header></app-header>
+  <main class="flex-1">
+    <app-warning></app-warning>
+    <app-filters (filtersChanged)="eventList.onFiltersChanged($event)"></app-filters>
+    <app-event-list #eventList></app-event-list>
+  </main>
+  <app-footer></app-footer>
+  <app-opera-modal></app-opera-modal>
+</div>
+<router-outlet></router-outlet>

@@ -1,0 +1,8 @@
+<div *ngIf="(modalState$ | async)?.isOpen" class="modal" style="display: block;">
+  <div class="modal-content">
+    <span class="close" (click)="close()">&times;</span>
+    <h3 id="modalTitle" class="text-xl font-bold text-gray-900">{{ (modalState$ | async)?.operaName }}</h3>
+    <div class="h-1 w-full bg-gradient-to-r from-[#003366] to-black my-4 rounded-full"></div>
+    <div id="modalDescription" class="text-gray-700 leading-relaxed" [innerHTML]="(modalState$ | async)?.description"></div>
+  </div>
+</div>
