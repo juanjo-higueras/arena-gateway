@@ -1,29 +1,18 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import axios, { AxiosResponse } from 'axios';
-import * as cheerio from 'cheerio';
 
-export interface EventDetail {
-  date: string;
-  cast: string[];
-  buyTicketsLink: string | null;
-}
+const express = require('express');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
-export interface ScrapedEvent {
-  title: string;
-  url: string;
-  details: EventDetail[];
-}
+class AppService {
+  constructor() {
+    this.baseUrl = 'https://www.arena.it/arena-opera-festival/';
+    this.eventsUrl = 'https://www.arena.it/en/arena-verona-opera-festival/events/';
+  }
 
-@Injectable()
-export class AppService {
-  private readonly baseUrl = 'https://www.arena.it/arena-opera-festival/';
-  private readonly eventsUrl =
-    'https://www.arena.it/en/arena-verona-opera-festival/events/';
-
-  private async fetchPageContent(url: string): Promise<string> {
+  async fetchPageContent(url) {
     try {
       console.log(`Buscando contenido de la página: ${url}`);
-      const response: AxiosResponse<string> = await axios.get(url, {
+      const response = await axios.get(url, {
         headers: {
           'User-Agent':
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -36,9 +25,7 @@ export class AppService {
       console.error(
         `❌ Error al obtener el contenido de ${url}: ${errorMessage}`,
       );
-      throw new InternalServerErrorException(
-        `Error al obtener el contenido de ${url}`,
-      );
+      throw new Error(`Error al obtener el contenido de ${url}`);
     }
   }
 
@@ -47,10 +34,8 @@ export class AppService {
       const html = await this.fetchPageContent(this.baseUrl);
       const $ = cheerio.load(html);
 
-      let edition: string | null = null;
-      const editionElement = $(
-        'header.heading .title.hp .small',
-      ) as cheerio.Cheerio<any>;
+      let edition = null;
+      const editionElement = $('header.heading .title.hp .small');
       if (editionElement.length) {
         edition = editionElement.text().trim();
         console.log(`⭐ Edición encontrada: ${edition}`);
@@ -64,27 +49,21 @@ export class AppService {
         'Error al hacer scraping de la información del festival con Axios/Cheerio:',
         errorMessage,
       );
-      throw new InternalServerErrorException(
-        'Error al hacer scraping de la información del festival',
-      );
+      throw new Error('Error al hacer scraping de la información del festival');
     }
   }
 
-  async scrapeEventDetails(url: string) {
+  async scrapeEventDetails(url) {
     try {
       console.log(`Extrayendo detalles de la página: ${url}`);
       const html = await this.fetchPageContent(url);
       const $ = cheerio.load(html);
 
-      const eventData: EventDetail[] = [];
-      const eventBlocks = $(
-        'ul.listing-data-show.cast.bh-accordion > li',
-      ) as cheerio.Cheerio<any>;
+      const eventData = [];
+      const eventBlocks = $('ul.listing-data-show.cast.bh-accordion > li');
 
       eventBlocks.each((index, block) => {
-        const timeElement = $(block).find(
-          'time[datetime]',
-        ) as cheerio.Cheerio<any>;
+        const timeElement = $(block).find('time[datetime]');
         const rawDate = timeElement.attr('datetime');
 
         if (rawDate && rawDate.includes('2026')) {
@@ -96,17 +75,13 @@ export class AppService {
           const minutes = String(dateObj.getMinutes()).padStart(2, '0');
           const formattedDate = `${day}.${month}.${year} - ${hours}:${minutes}`;
 
-          const castList: string[] = [];
-          const castRows = $(block).find(
-            'table.tbl.cast tbody th',
-          ) as cheerio.Cheerio<any>;
+          const castList = [];
+          const castRows = $(block).find('table.tbl.cast tbody th');
           castRows.each((castIndex, row) => {
             castList.push($(row).text().trim());
           });
 
-          const buyTicketsLinkElement = $(block).find(
-            'a.btn.primary.full-down-sm',
-          ) as cheerio.Cheerio<any>;
+          const buyTicketsLinkElement = $(block).find('a.btn.primary.full-down-sm');
           const buyTicketsLink = buyTicketsLinkElement.attr('href') || null;
 
           eventData.push({
@@ -130,10 +105,10 @@ export class AppService {
       const html = await this.fetchPageContent(this.eventsUrl);
       const $ = cheerio.load(html);
       const results = new Set();
-      const allDivs = $('div') as cheerio.Cheerio<any>;
+      const allDivs = $('div');
 
       allDivs.each((index, div) => {
-        const eventTags = $(div).find('div.tag') as cheerio.Cheerio<any>;
+        const eventTags = $(div).find('div.tag');
         const tagsArray = eventTags.map((i, el) => $(el).text()?.trim()).get();
 
         const hasOperaTag = tagsArray.some((tag) => tag === 'Opera');
@@ -145,10 +120,10 @@ export class AppService {
         if (hasOperaTag && has2026Tag && hasOnlyAllowedTags) {
           const titleElement = $(div)
             .find('h1, h2, h3, .title, .event-title, a')
-            .first() as cheerio.Cheerio<any>;
+            .first();
           const title = titleElement?.text()?.trim() || 'Título no encontrado';
 
-          const linkElement = $(div).find('a').first() as cheerio.Cheerio<any>;
+          const linkElement = $(div).find('a').first();
           let url;
           if (linkElement.length) {
             const href = linkElement.attr('href');
@@ -175,8 +150,8 @@ export class AppService {
         }
       });
 
-      const events: ScrapedEvent[] = Array.from(results).map(
-        (item: string) => JSON.parse(item) as ScrapedEvent,
+      const events = Array.from(results).map(
+        (item) => JSON.parse(item),
       );
 
       for (const event of events) {
@@ -189,9 +164,46 @@ export class AppService {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
       console.error('Error al hacer scraping con Axios/Cheerio:', errorMessage);
-      throw new InternalServerErrorException(
-        'Error al hacer scraping de los eventos',
-      );
+      throw new Error('Error al hacer scraping de los eventos');
     }
   }
 }
+
+const app = express();
+const port = 3000;
+const scraperService = new AppService();
+
+app.get('/verona/api/', async (req, res) => {
+  try {
+    res.send(`<h1>API de Scraping del Festival de la Arena de Verona</h1>`);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/verona/api/events', async (req, res) => {
+  try {
+    console.log('Recibida una solicitud GET para /verona/api/events');
+    const events = await scraperService.scrapeEvents();
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/verona/api/festival-info', async (req, res) => {
+  try {
+    console.log('Recibida una solicitud GET para /verona/api/festival-info');
+    const info = await scraperService.scrapeFestivalInfo();
+    if (!info || !info.edition) {
+      return res.status(404).json({ message: 'Información del festival no encontrada.' });
+    }
+    res.json(info);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Servidor escuchando en http://localhost:${port}`);
+});
