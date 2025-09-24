@@ -10,7 +10,7 @@ import { FestivalInfo } from '../models/festival-info.model';
 export class EventService {
   private http = inject(HttpClient);
 
-  private apiUrl = 'http://localhost:3000/scraper';
+  private apiUrl = 'https://juanjohigueras.com/verona/api';
 
   getEvents(): Observable<Event[]> {
     return this.http.get<Event[]>(`${this.apiUrl}/events`);
