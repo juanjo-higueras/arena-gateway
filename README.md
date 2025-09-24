@@ -1,6 +1,6 @@
 # Arena Gateway
 
-Este proyecto es una aplicación web completa que consta de un frontend desarrollado con Angular y un backend desarrollado con NestJS.
+Este proyecto es una aplicación web completa que consta de un frontend desarrollado con Angular y un backend desarrollado con Node.js y Express.
 
 ## Descripción
 
@@ -25,13 +25,12 @@ Servicios:
 
 ### Backend
 
-El backend está construido con **NestJS 11**, un marco de trabajo de Node.js para construir aplicaciones eficientes y escalables del lado del servidor.
+El backend es una aplicación simple de **Node.js** que utiliza **Express.js** para crear la API.
 
 Características clave:
 
-*   Utiliza **Express.js** como el servidor HTTP subyacente.
 *   Incluye `axios` y `cheerio` como dependencias, lo que sugiere que el backend puede estar haciendo web scraping de otras fuentes para recopilar datos de eventos.
-*   La estructura sigue las convenciones estándar de NestJS con controladores, módulos y servicios.
+*   El punto de entrada de la aplicación es `server-api.js`.
 
 ## Cómo empezar
 
@@ -41,7 +40,6 @@ A continuación se detallan los pasos para poner en marcha tanto el frontend com
 
 *   Node.js (que incluye npm)
 *   Angular CLI (`npm install -g @angular/cli`)
-*   NestJS CLI (`npm install -g @nestjs/cli`)
 
 ### Backend
 
@@ -53,11 +51,11 @@ A continuación se detallan los pasos para poner en marcha tanto el frontend com
     ```bash
     npm install
     ```
-3.  Inicie el servidor de desarrollo:
+3.  Inicie el servidor:
     ```bash
-    npm run start:dev
+    npm start
     ```
-    El backend se ejecutará en el puerto que NestJS define por defecto (normalmente el 3000).
+    El backend se ejecutará en el puerto 3000.
 
 ### Frontend
 
@@ -81,12 +79,7 @@ Ambos, el frontend y el backend, vienen con una serie de scripts para ayudar en 
 
 ### Backend
 
-*   `npm run build`: Compila la aplicación para producción.
-*   `npm run format`: Formatea el código usando Prettier.
-*   `npm run start`: Inicia la aplicación.
-*   `npm run start:dev`: Inicia la aplicación en modo de observación.
-*   `npm run lint`: Realiza el linting del código.
-*   `npm test`: Ejecuta las pruebas unitarias.
+*   `npm start`: Inicia la aplicación.
 
 ### Frontend
 
