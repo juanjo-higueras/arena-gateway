@@ -175,7 +175,7 @@ const scraperService = new AppService();
 
 app.get('/verona/api/', async (req, res) => {
   try {
-    res.send(`<h1>API de Scraping del Festival de la Arena de Verona</h1>`);
+    res.send(`<p>API del Festival de ópera de la Arena de Verona</p>`);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
