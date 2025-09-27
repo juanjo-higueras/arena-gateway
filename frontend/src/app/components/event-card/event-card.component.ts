@@ -67,11 +67,9 @@ export class EventCardComponent {
       case 'Turandot':
         nombreArchivo = 'turandot.jpg';
         break;
-      default:
-        break;
     }
 
-    return `url('/assets/${nombreArchivo}')`;
+    return `url('assets/${nombreArchivo}')`;
   }  
 
   private readonly operaDescriptions: { [key: string]: string } = {
