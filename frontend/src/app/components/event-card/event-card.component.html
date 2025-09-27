@@ -1,16 +1,24 @@
 <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 flex flex-col h-full">
-  <div class="bg-gradient-to-r from-[#003366] to-black p-2 rounded-lg mb-2 flex items-center justify-between">
-    <div class="flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13m-6 0v6l-12-3v-13" />
-      </svg>
-      <h2 class="text-lg sm:text-xl font-bold text-white text-center ml-2 overflow-hidden whitespace-nowrap">{{ operaName }}</h2>
-    </div>
-    <button (click)="openInfoModal()" class="text-white hover:text-yellow-400 info-icon" [attr.data-opera]="event.title.replace(' | 2026', '')" aria-label="Ver descripción de la ópera">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    </button>
+  <div class="relative h-32 rounded-t-xl mb-2 overflow-hidden shadow-2xl border border-gray-700 transition-all duration-300 hover:shadow-2xl hover:scale-[1.03]">
+      <div class="absolute inset-0 bg-cover bg-center" [ngStyle]="{'background-image': getFondoUrl()}"></div>
+
+      <div class="absolute inset-0 bg-gradient-to-r from-[#003366]/50 to-black/50"></div>
+      
+      <div class="relative z-10 h-full p-4 flex flex-col justify-between">
+          <div class="flex justify-end w-full cursor-pointer">
+            <button (click)="openInfoModal()" class="text-white hover:text-yellow-400 info-icon" [attr.data-opera]="event.title.replace(' | 2026', '')" aria-label="Ver descripción de la ópera">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+          </div>
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13m-6 0v6l-12-3v-13" />
+            </svg>
+            <h2 class="text-xl font-bold text-white ml-2 overflow-hidden whitespace-nowrap">{{ operaName }}</h2>
+          </div>
+      </div>
   </div>
   <p class="text-lg text-gray-500 mb-2"><strong>{{ performanceCount }}</strong> {{ performanceText }} programada{{ performanceCount === 1 ? '' : 's' }}.</p>
   <button (click)="openUrl(event.url)" class="btn-primary mt-3 mb-6 inline-flex items-center justify-center text-base font-medium" aria-label="Ver más detalles del evento">
