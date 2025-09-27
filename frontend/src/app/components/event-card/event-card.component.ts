@@ -41,7 +41,7 @@ export class EventCardComponent {
   }
 
   openInfoModal(): void {
-    const operaName = this.event.title.replace(' | 2026', '');
+    const operaName = this.operaName;
     const description = this.operaDescriptions[operaName] || 'No hay descripción disponible para esta ópera.';
     this.modalService.openModal(operaName, description);
   }
@@ -49,10 +49,10 @@ export class EventCardComponent {
   public getFondoUrl(): string {
     let nombreArchivo = '';
     switch (this.operaName) {
-      case 'Aida Ed. Stefano Poda':
+      case 'Aida (Stefano Poda)':
         nombreArchivo = 'aida_poda.jpg';
         break;
-      case 'Aida Ed. Franco Zeffirelli':
+      case 'Aida (Franco Zeffirelli)':
         nombreArchivo = 'aida_zefirelli.jpg';
         break;
       case 'Nabucco':
@@ -75,7 +75,7 @@ export class EventCardComponent {
   }  
 
   private readonly operaDescriptions: { [key: string]: string } = {
-    'Aida Ed. Stefano Poda': `Aida es una ópera en cuatro actos de Giuseppe Verdi. La trama se desarrolla en el antiguo Egipto, en un contexto de guerra entre Egipto y Etiopía. La ópera narra el trágico romance entre Radamés, un comandante egipcio, y Aida, una princesa etíope que ha sido esclavizada. Su amor es puesto a prueba por la rivalidad de Amneris, la hija del Faraón, que también ama a Radamés. El drama culmina con una traición, el juicio de Radamés y su fatal desenlace. Aunque existen varias producciones con diferentes directores (como Stefano Poda o Franco Zeffirelli), la música y el libreto de la ópera son los mismos.
+    'Aida (Stefano Poda)': `Aida es una ópera en cuatro actos de Giuseppe Verdi. La trama se desarrolla en el antiguo Egipto, en un contexto de guerra entre Egipto y Etiopía. La ópera narra el trágico romance entre Radamés, un comandante egipcio, y Aida, una princesa etíope que ha sido esclavizada. Su amor es puesto a prueba por la rivalidad de Amneris, la hija del Faraón, que también ama a Radamés. El drama culmina con una traición, el juicio de Radamés y su fatal desenlace. Aunque existen varias producciones con diferentes directores (como Stefano Poda o Franco Zeffirelli), la música y el libreto de la ópera son los mismos.
       <br><br>
       <strong>Acto I:</strong> El ejército egipcio se prepara para la guerra contra Etiopía. Radamés es elegido comandante y, en secreto, sueña con su amada Aida. Sin embargo, Amneris, la princesa egipcia, sospecha de su amor por Aida y la interroga con astucia.
       <br><br>
@@ -84,7 +84,7 @@ export class EventCardComponent {
       <strong>Acto III:</strong> A orillas del río Nilo, Aida se encuentra con Radamés. El padre de Aida la convence para que le sonsaque los planes de guerra. Radamés, cegado por el amor, revela la información. Son descubiertos por Amneris y el sacerdote Ramfis, y Radamés es acusado de traición.
       <br><br>
       <strong>Acto IV:</strong> Radamés es juzgado por los sacerdotes y condenado a ser enterrado vivo. Aida, que logra colarse en el sepulcro, espera a Radamés para morir junto a él. Ambos sellan su amor en la tumba, mientras Amneris, fuera del sepulcro, llora su amor perdido.`,
-    'Aida Ed. Franco Zeffirelli': `Aida es una ópera en cuatro actos de Giuseppe Verdi. La trama se desarrolla en el antiguo Egipto, en un contexto de guerra entre Egipto y Etiopía. La ópera narra el trágico romance entre Radamés, un comandante egipcio, y Aida, una princesa etíope que ha sido esclavizada. Su amor es puesto a prueba por la rivalidad de Amneris, la hija del Faraón, que también ama a Radamés. El drama culmina con una traición, el juicio de Radamés y su fatal desenlace. Aunque existen varias producciones con diferentes directores (como Stefano Poda o Franco Zeffirelli), la música y el libreto de la ópera son los mismos.
+    'Aida (Franco Zeffirelli)': `Aida es una ópera en cuatro actos de Giuseppe Verdi. La trama se desarrolla en el antiguo Egipto, en un contexto de guerra entre Egipto y Etiopía. La ópera narra el trágico romance entre Radamés, un comandante egipcio, y Aida, una princesa etíope que ha sido esclavizada. Su amor es puesto a prueba por la rivalidad de Amneris, la hija del Faraón, que también ama a Radamés. El drama culmina con una traición, el juicio de Radamés y su fatal desenlace. Aunque existen varias producciones con diferentes directores (como Stefano Poda o Franco Zeffirelli), la música y el libreto de la ópera son los mismos.
       <br><br>
       <strong>Acto I:</strong> El ejército egipcio se prepara para la guerra contra Etiopía. Radamés es elegido comandante y, en secreto, sueña con su amada Aida. Sin embargo, Amneris, la princesa egipcia, sospecha de su amor por Aida y la interroga con astucia.
       <br><br>
