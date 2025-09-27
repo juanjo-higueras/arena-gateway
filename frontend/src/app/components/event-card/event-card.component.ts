@@ -46,6 +46,34 @@ export class EventCardComponent {
     this.modalService.openModal(operaName, description);
   }
 
+  public getFondoUrl(): string {
+    let nombreArchivo = '';
+    switch (this.operaName) {
+      case 'Aida Ed. Stefano Poda':
+        nombreArchivo = 'aida_poda.jpg';
+        break;
+      case 'Aida Ed. Franco Zeffirelli':
+        nombreArchivo = 'aida_zefirelli.jpg';
+        break;
+      case 'Nabucco':
+        nombreArchivo = 'nabucco.jpg';
+        break;
+      case 'La Bohème':
+        nombreArchivo = 'boheme.jpg';
+        break;
+      case 'La Traviata':
+        nombreArchivo = 'traviata.jpg';
+        break;
+      case 'Turandot':
+        nombreArchivo = 'turandot.jpg';
+        break;
+      default:
+        break;
+    }
+
+    return `url('/assets/${nombreArchivo}')`;
+  }  
+
   private readonly operaDescriptions: { [key: string]: string } = {
     'Aida Ed. Stefano Poda': `Aida es una ópera en cuatro actos de Giuseppe Verdi. La trama se desarrolla en el antiguo Egipto, en un contexto de guerra entre Egipto y Etiopía. La ópera narra el trágico romance entre Radamés, un comandante egipcio, y Aida, una princesa etíope que ha sido esclavizada. Su amor es puesto a prueba por la rivalidad de Amneris, la hija del Faraón, que también ama a Radamés. El drama culmina con una traición, el juicio de Radamés y su fatal desenlace. Aunque existen varias producciones con diferentes directores (como Stefano Poda o Franco Zeffirelli), la música y el libreto de la ópera son los mismos.
       <br><br>
