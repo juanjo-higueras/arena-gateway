@@ -2,6 +2,7 @@
 const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
+const cors = require('cors');
 
 class AppService {
   constructor() {
@@ -172,6 +173,13 @@ class AppService {
 const app = express();
 const port = 3000;
 const scraperService = new AppService();
+
+const corsOptions = {
+  origin: ['http://localhost:4200', 'https://juanjohigueras.com'],
+  credentials: true, 
+};
+
+app.use(cors(corsOptions));
 
 app.get('/verona/api/', async (req, res) => {
   try {
