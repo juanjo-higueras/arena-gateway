@@ -1,6 +1,6 @@
 .header-background {
   position: relative;
-  background-image: url('assets/arena-header.jpg');
+  background-image: url('../../../assets/arena-header.jpg');
   background-size: cover;
   background-position: top;
   background-repeat: no-repeat;
