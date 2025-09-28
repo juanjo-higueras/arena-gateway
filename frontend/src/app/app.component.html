@@ -1,6 +1,6 @@
 <div class="bg-gray-50 min-h-screen flex flex-col">
   <app-header></app-header>
-  <main class="flex-1">
+  <main class="flex-1 pb-14 bg-[url('assets/arena.png')] bg-bottom bg-no-repeat bg-[size:100%_auto]">
     <app-warning></app-warning>
     <app-filters (filtersChanged)="eventList.onFiltersChanged($event)"></app-filters>
     <app-event-list #eventList></app-event-list>
