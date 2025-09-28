@@ -34,8 +34,8 @@
   </button>
   <div class="space-y-4 overflow-y-auto max-h-96 pr-2">
     <div *ngFor="let detail of event.details" class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-      <p class="text-lg text-gray-700"><span class="font-bold text-gray-900">Fecha:</span> {{ formatDate(detail.date) }}</p>
-      <p class="text-lg text-gray-600 mt-1 mb-2"><span class="font-bold text-gray-800">Cast:</span></p>
+      <p class="text-lg text-gray-700"><span class="font-bold text-gray-900">📆 Fecha:</span> {{ formatDate(detail.date) }}</p>
+      <p class="text-lg text-gray-600 mt-1 mb-2"><span class="font-bold text-gray-800">🎭 Cast:</span></p>
       <ul class="list-disc list-inside space-y-1">
         <li *ngFor="let castMember of detail.cast">{{ castMember }}</li>
       </ul>
