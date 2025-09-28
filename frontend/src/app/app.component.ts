@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
@@ -11,6 +12,7 @@ import { OperaModalComponent } from './components/opera-modal/opera-modal.compon
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     HeaderComponent,
     WarningComponent,
@@ -24,4 +26,9 @@ import { OperaModalComponent } from './components/opera-modal/opera-modal.compon
 })
 export class AppComponent {
   title = 'verona-front';
+  isDataLoaded = false;
+
+  onDataLoaded(): void {
+    this.isDataLoaded = true;
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Output, EventEmitter } from '@angular/core';
 import { EventService } from '../../services/event.service';
 import { Event } from '../../models/event.model';
 import { CommonModule } from '@angular/common';
@@ -20,12 +20,15 @@ export class EventListComponent implements OnInit {
   loading = true;
   error = false;
 
+  @Output() dataLoaded = new EventEmitter<void>();
+
   ngOnInit(): void {
     this.eventService.getEvents().subscribe({
       next: (data) => {
         this.allEvents = data;
         this.filteredEvents = data;
         this.loading = false;
+        this.dataLoaded.emit();
       },
       error: () => {
         this.error = true;
